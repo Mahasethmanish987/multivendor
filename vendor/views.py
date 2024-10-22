@@ -4,7 +4,7 @@ from .forms import VendorForm
 from accounts.models import User,UserProfile
 from django.contrib import messages 
 from accounts.utils import send_verification_email
-
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 def registerVendor(request):
 
@@ -43,5 +43,6 @@ def registerVendor(request):
         v_form=VendorForm()
         return render(request,'vendor/registerVendor.html',{'form':form,'v_form':v_form})    
         
-
-
+@login_required(login_url='accounts:login')
+def vprofile(request):
+    return render(request,'vendor/vprofile.html')
