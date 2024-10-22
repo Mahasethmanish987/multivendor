@@ -1,10 +1,12 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from accounts.forms import UserRegistration
 from .forms import VendorForm
 from accounts.models import User,UserProfile
 from django.contrib import messages 
 from accounts.utils import send_verification_email
 from django.contrib.auth.decorators import login_required
+from accounts.forms import UserProfileForm 
+from .models import vendor
 # Create your views here.
 def registerVendor(request):
 
@@ -45,4 +47,34 @@ def registerVendor(request):
         
 @login_required(login_url='accounts:login')
 def vprofile(request):
-    return render(request,'vendor/vprofile.html')
+    profile=get_object_or_404(UserProfile,user=request.user)
+    vendor1=get_object_or_404(vendor,user=request.user)
+
+    if request.method=='POST':
+        profile_form=UserProfileForm(request.POST,request.FILES,instance=profile)
+        vendor_form=VendorForm(request.POST,request.FILES,instance=vendor1)
+
+        if profile_form.is_valid() and vendor_form.is_valid():
+            profile_form.save()
+            vendor_form.save()
+            messages.success(request,'settings updated')
+            return redirect('vendor:vprofile')
+        
+        else:
+            context={
+        'profile_form':profile_form,
+        'vendor_form':vendor_form,
+        'vendor1':vendor1,
+        'profile':profile
+    }
+            return render(request,'vendor/vprofile.html',context)
+    else:
+     profile_form=UserProfileForm(instance=profile)
+     vendor_form=VendorForm(instance=vendor1)
+     context={
+        'profile_form':profile_form,
+        'vendor_form':vendor_form,
+        'vendor1':vendor1,
+        'profile':profile
+    }
+     return render(request,'vendor/vprofile.html',context)
