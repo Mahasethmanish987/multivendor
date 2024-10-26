@@ -117,7 +117,7 @@ def activate(request,uidb64,token):
        return redirect('accounts:login')
     else:
         messages.error(request,'invalid link')
-        redirect('myapp:index')   
+        return redirect('myapp:index')   
 
 
 def forgot_password(request):

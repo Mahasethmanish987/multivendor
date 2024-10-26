@@ -30,10 +30,16 @@
                                   <td><a href=""><p class="mb-0 font-weight-bold">{{food}}</p>
                                   <small class="text-muted">{{food.description}}</small>
                                   </a></td>
-                                  <td><i class="fa fa-edit" aria-hidden="true"></i>
+                                  {% if food.is_available %}
+                                  <td><span class="badge badge-success">Available</span></td>
+                                  {% else %}
+                                  <td><span class="badge badge-danger"> Not Available</span></td>
+                                  {% endif %}
+                                  <td>
+                                    <a href="{% url 'vendor:edit_food' food.pk%}"><i class="fa fa-edit" aria-hidden="true"></i></a>
                                     
                                   </td>
-                                  <td><i class="fa fa-trash text-danger" aria-hidden="true"></i></td>
+                                  <td><a href="{% url 'vendor:delete_food' food.pk %}" onclick="return confirm('are you sure want to delete the item')"><i class="fa fa-trash text-danger" aria-hidden="true"></i></a></td>
                                 </tr>
                                 {% endfor %}
                               </tbody>
@@ -41,7 +47,7 @@
                               {% else %}
                               <h5 class="text-center">No Food Item Found</h5>
                               <div class="text-center">
-                                <a href="#" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true" ></i>&nbsp; Add Food</a>
+                                <a href="{%url 'vendor:add_food' %}" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true" ></i>&nbsp; Add Food</a>
 
                               </div>
                               {% endif %}
